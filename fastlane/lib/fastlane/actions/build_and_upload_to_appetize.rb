@@ -21,7 +21,6 @@ module Fastlane
                                api_token: params[:api_token])
 
         public_key = Actions.lane_context[SharedValues::APPETIZE_PUBLIC_KEY]
-        File.write("appetize_public_key.txt", public_key)
         UI.success("Generated Public Key: #{Actions.lane_context[SharedValues::APPETIZE_PUBLIC_KEY]}")
 
         FileUtils.rm_rf(tmp_path)

@@ -21,7 +21,9 @@ module Danger
 
           # since we fetch the URL from the output we don't need colors
           # this will only be changed in the danger sub-process
-          ENV["FASTLANE_DISABLE_COLORS"] = "true"
+          fastlane_colors_env = "FASTLANE_DISABLE_COLORS"
+          fastlane_colors_were_disabled = ENV.key?(fastlane_colors_env)
+          ENV[fastlane_colors_env] = "true"
 
           markdown("<table>")
           languages.each do |current_language|
@@ -56,6 +58,8 @@ module Danger
             markdown("</tr>")
           end
           markdown("</table>")
+
+          ENV.delete(fastlane_colors_env) unless fastlane_colors_were_disabled
         end
 
         def beautiful_device_name(str)
