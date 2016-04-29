@@ -27,7 +27,7 @@ describe Fastlane do
              devices: ['iphone4s'],
              public_key: public_key)
 
-      correct = File.read("spec/fixtures/device_grid_results.html")
+      correct = File.read("spec/fixtures/device_grid_results.html").gsub("[[version]]", Fastlane::VERSION)
       expect(dg.current_markdown).to eq(correct)
     end
   end
