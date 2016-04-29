@@ -11,6 +11,12 @@ module Danger
         # @param prefix_command: Prefix the `fastlane run appetize_viewing_url_generator` command with something
         #   this can be used to use `bundle exec`
         def run(public_key: nil, languages: nil, devices: nil, prefix_command: nil)
+          # since we fetch the URL from the output we don't need colors
+          # this will only be changed in the danger sub-process
+          fastlane_colors_env = "FASTLANE_DISABLE_COLORS"
+          fastlane_colors_were_disabled = ENV.key?(fastlane_colors_env)
+          ENV[fastlane_colors_env] = "true"
+
           devices ||= %w(iphone4s iphone5s iphone6s iphone6splus ipadair)
           languages ||= ["en"]
           prefix_command = "bundle exec" if File.exist?("Gemfile")
@@ -18,12 +24,6 @@ module Danger
 
           deep_link_matches = pr_body.match(/:link:\s(.*)/) # :link: emoji
           deep_link = deep_link_matches[1] if deep_link_matches
-
-          # since we fetch the URL from the output we don't need colors
-          # this will only be changed in the danger sub-process
-          fastlane_colors_env = "FASTLANE_DISABLE_COLORS"
-          fastlane_colors_were_disabled = ENV.key?(fastlane_colors_env)
-          ENV[fastlane_colors_env] = "true"
 
           markdown("<table>")
           languages.each do |current_language|
@@ -58,7 +58,7 @@ module Danger
             markdown("</tr>")
           end
           markdown("</table>")
-
+        ensure
           ENV.delete(fastlane_colors_env) unless fastlane_colors_were_disabled
         end
 
